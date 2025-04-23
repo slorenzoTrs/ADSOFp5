@@ -1,8 +1,10 @@
 package grafos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * La clase Node representa un nodo genérico dentro de una estructura de flujo,
@@ -19,6 +21,7 @@ public class Node<S> {
 	private String nombre;
 	private Consumer<S> codigo;
 	private List<Node<S>> nextNodes = new ArrayList<>();
+	private HashMap<String, Predicate<S>> condExecutes = new HashMap<>();
 	
 	/**
      * Constructor de la clase Node.
@@ -86,5 +89,26 @@ public class Node<S> {
 	public String toString() {
 		String s = "Node " + nombre + " (" + nextNodes.size() + " output nodes)";
 		return s;
+	}
+	
+	/**
+     * Añade una condicion para ejecutar a la arista que une los nodos.
+     * 
+     * @param node Nombre identificador del nodo.
+     * @param condExecute expresión lambda que sirve de condicion para la arista.
+     */
+	public void addCondition(String node, Predicate<S> condExecute) {
+		this.condExecutes.put(node, condExecute);
+	}
+	
+	/**
+     * Devuelve la expresión lambda que sirve de condicion para la arista que une ambos nodos.
+     * 
+     * @param node Nombre identificador del nodo.
+     * 
+     * @return Condicion para ejecutar la arista entre ambos nodos.
+     */
+	public Predicate<S> getCondition(String node) {
+		return this.condExecutes.get(node) ;
 	}
 }

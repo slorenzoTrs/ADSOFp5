@@ -2,6 +2,7 @@ package grafos;
 
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class StateGraph<T> {
 	private String nombre;
@@ -21,10 +22,20 @@ public class StateGraph<T> {
 		return this;
 	}
 	
-	public void addEdge(String origen, String destino) {
+	public StateGraph<T> addEdge(String origen, String destino) {
 		Node<T> nodoI = nodos.get(origen);
 		Node<T> nodoF = nodos.get(destino);
 		nodoI.setNextNode(nodoF);
+		nodoI.addCondition(destino, null);
+		return this;
+	}
+	
+	public StateGraph<T> addConditionalEdge(String origen, String destino, Predicate<T> condExecute) {
+		Node<T> nodoI = nodos.get(origen);
+		Node<T> nodoF = nodos.get(destino);
+		nodoI.setNextNode(nodoF);
+		nodoI.addCondition(destino, condExecute);
+		return this;
 	}
 	
 	public void setInitial(String init) {
@@ -57,6 +68,12 @@ public class StateGraph<T> {
 		}
 
         for (Node<T> next : node.getNextNode()) {
+        	Predicate<T> condExecute = node.getCondition(next.getNombre());
+        	if (condExecute != null) {
+        		if (condExecute.test(data) == false) {
+        			return data;
+        		}
+        	}
             executeFrom(next, data, debug, i);
         }
 
