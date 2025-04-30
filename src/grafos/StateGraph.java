@@ -1,7 +1,9 @@
 package grafos;
 
 import java.util.LinkedHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -18,12 +20,13 @@ import java.util.function.Predicate;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class StateGraph<T> {
-	private String nombre;
+public class StateGraph<T> extends Elemento<T>{
 	private String desc;
-	private LinkedHashMap<String, Node<T>> nodos = new LinkedHashMap<>();
-	private Node<T> nodoI;
-	private Node<T> nodoF;
+	private LinkedHashMap<String, Elemento<?>> nodos = new LinkedHashMap<>();
+	private Elemento<?> nodoI;
+	private Elemento<?> nodoF;
+	private Function<?, T> inyectorGenerico;
+	private BiConsumer<T, ?> extractorGenerico;
 	
 	/**
      * Constructor de la clase StateGraph.
@@ -32,7 +35,7 @@ public class StateGraph<T> {
      * @param desc Descripción del propósito del grafo.
      */
 	public StateGraph(String nombre, String desc) {
-		this.nombre = nombre;
+		super(nombre);
 		this.desc = desc;
 	}
 	
@@ -50,6 +53,18 @@ public class StateGraph<T> {
 	}
 	
 	/**
+     * Añade un nodo, en modo de StateGraph, al grafo con sus propios nodos.
+     * 
+     * @param nombreGrafo Nombre identificador del nodo-grafo.
+     * @param grafo Grafo hijo que estará contenido como un nodo más.
+     * @return Referencia al grafo actual para permitir llamadas encadenadas.
+     */
+	public <U> StateGraph<T> addWfNode(String nombreGrafo, StateGraph<U> grafo) {
+			this.nodos.put(nombreGrafo, grafo);
+			return this;
+	}
+	
+	/**
      * Añade una arista no condicional entre dos nodos.
      * 
      * @param origen Nombre del nodo de origen.
@@ -57,9 +72,10 @@ public class StateGraph<T> {
      * @return Referencia al grafo actual para permitir llamadas encadenadas.
      */
 	public StateGraph<T> addEdge(String origen, String destino) {
-		Node<T> nodoI = nodos.get(origen);
-		Node<T> nodoF = nodos.get(destino);
-		nodoI.setNextNode(nodoF);
+		Elemento<?> nodoI = null, nodoF = null;
+		nodoI = this.nodos.get(origen);
+		nodoF = this.nodos.get(destino);
+		nodoI.addNextNode(nodoF);
 		nodoI.addCondition(destino, null);
 		return this;
 	}
@@ -73,9 +89,11 @@ public class StateGraph<T> {
      * @return Referencia al grafo actual para permitir llamadas encadenadas.
      */
 	public StateGraph<T> addConditionalEdge(String origen, String destino, Predicate<T> condExecute) {
-		Node<T> nodoI = nodos.get(origen);
-		Node<T> nodoF = nodos.get(destino);
-		nodoI.setNextNode(nodoF);
+		Elemento<?> nodoF = null;
+		Elemento<T> nodoI = null;
+		nodoI = (Elemento<T>) this.nodos.get(origen);
+		nodoF = this.nodos.get(destino);
+		nodoI.addNextNode(nodoF);
 		nodoI.addCondition(destino, condExecute);
 		return this;
 	}
@@ -86,7 +104,7 @@ public class StateGraph<T> {
      * @param init Nombre del nodo inicial.
      */
 	public void setInitial(String init) {
-		Node<T> nodo = nodos.get(init);
+		Elemento<?> nodo = nodos.get(init);
 		this.nodoI = nodo;
 	}
 	
@@ -96,8 +114,26 @@ public class StateGraph<T> {
      * @param fin Nombre del nodo final.
      */
 	public void setFinal(String fin) {
-		Node<T> nodo = nodos.get(fin);
+		Elemento<?> nodo = nodos.get(fin);
 		this.nodoF = nodo;
+	}
+	
+	/**
+     * Obtiene el nodo inicial del grafo.
+     * 
+     * @result init Nodo inicial.
+     */
+	public Elemento<?> getInitial() {
+		return this.nodoI;
+	}
+	
+	/**
+     * Obtiene el nodo final del grafo.
+     * 
+     * @result init Nodo final.
+     */
+	public Elemento<?> getFinal() {
+		return this.nodoF;
 	}
 	
 	/**
@@ -110,7 +146,7 @@ public class StateGraph<T> {
 	public T run(T input, boolean trazado) {
 		int i = 1;
 		if(trazado) {
-			System.out.println("Step " + i + " (" + this.nombre + ") -- input: " + input.toString());
+			System.out.println("Step " + i + " (" + super.toString() + ") -- input: " + input.toString());
 			i++;
 		}
 		T result = executeFrom(nodoI, input, trazado, i);
@@ -126,23 +162,41 @@ public class StateGraph<T> {
      * @param i Contador de pasos para trazado.
      * @return Resultado tras procesar el flujo desde el nodo dado.
      */
-	private T executeFrom(Node<T> node, T data, boolean debug, int i) {
+	private T executeFrom(Elemento<?> node, T data, boolean debug, int i) {
         if (node == null) return data;
-
-        node.execute(data);
+        
+        ((Elemento<T>) node).ejecutar(data, debug);
         if(debug) {
-			System.out.println("Step " + i + " (" + this.nombre + ") -- " + node.getNombre() + " executed: " + data.toString());
+			System.out.println("Step " + i + " (" + super.toString() + ") -- " + node.getNombre() + " executed: " + data.toString());
 			i++;
 		}
 
-        for (Node<T> next : node.getNextNode()) {
-        	Predicate<T> condExecute = node.getCondition(next.getNombre());
+        for (Elemento next : node.getNextNodes()) {
+        	Predicate<T> condExecute = (Predicate<T>) node.getCondition(next.getNombre());
         	if (condExecute != null) {
         		if (condExecute.test(data) == false) {
         			return data;
         		}
         	}
-            executeFrom(next, data, debug, i);
+        	if (next instanceof StateGraph<?> sg) {
+                // Grafo hijo: aplicar inyector y extractor
+        		Function<Object, Object> inyector = (Function<Object, Object>) ((StateGraph<?>) next).inyectorGenerico;
+        		BiConsumer<Object, Object> extractor = (BiConsumer<Object, Object>) ((StateGraph<?>) next).extractorGenerico;
+
+        		StateGraph<Object> sgCast = (StateGraph<Object>) sg;
+
+        		Object datoHijo = inyector != null ? inyector.apply(data) : null;
+
+        		sgCast.run(datoHijo, debug);  // ejecutar el subgrafo
+
+                if (extractor != null) {
+                    extractor.accept(datoHijo, data);  // combinar resultados
+                }
+
+            } else {
+                // Nodo normal
+                executeFrom(next, data, debug, i);
+            }
         }
 
         return data;
@@ -156,10 +210,29 @@ public class StateGraph<T> {
 	@Override
 	public String toString() {
 		String s = "";
-		s += "Workflow '" + nombre + "' (" + desc + "):\n";
+		s += "Workflow '" + this.getNombre() + "' (" + desc + "):\n";
 		s += "-- Nodes: " + nodos.toString() + "\n";
 		s += "-- Initial: " + nodoI.getNombre() + "\n";
 		s += "-- Final: " + nodoF.getNombre();
 		return s;
+	}
+	
+	public <R> void withInjector(Function<R, T> injector) {
+		this.inyectorGenerico = injector;
+	}
+
+	public <R> void withExtractor(BiConsumer<T, R> extractor) {
+		this.extractorGenerico = extractor;
+	}
+
+	@Override
+	public boolean isNode() {
+		return false;
+	}
+
+	
+	@Override
+	public void ejecutar(T input, boolean debug) {
+		this.run(input, debug);
 	}
 }

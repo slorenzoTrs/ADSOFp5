@@ -1,10 +1,6 @@
 package grafos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * La clase Node representa un nodo genérico dentro de una estructura de flujo,
@@ -17,11 +13,8 @@ import java.util.function.Predicate;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class Node<S> {
-	private String nombre;
+public class Node<S> extends Elemento<S>{
 	private Consumer<S> codigo;
-	private List<Node<S>> nextNodes = new ArrayList<>();
-	private HashMap<String, Predicate<S>> condExecutes = new HashMap<>();
 	
 	/**
      * Constructor de la clase Node.
@@ -30,17 +23,8 @@ public class Node<S> {
      * @param codigo Código a ejecutar cuando el nodo es activado.
      */
 	public Node(String nombre, Consumer<S> codigo) {
-		this.nombre = nombre;
+		super(nombre);
 		this.codigo = codigo;
-	}
-	
-	/**
-     * Obtiene el nombre del nodo.
-     * 
-     * @return Nombre del nodo.
-     */
-	public String getNombre() {
-		return nombre;
 	}
 	
 	/**
@@ -50,25 +34,6 @@ public class Node<S> {
      */
 	public Consumer<S> getCodigo() {
 		return codigo;
-	}
-	
-	/**
-     * Obtiene la lista de nodos siguientes en el flujo.
-     * 
-     * @return Lista de nodos siguientes.
-     */
-	public List<Node<S>> getNextNode() {
-		return nextNodes;
-	}
-	
-	/**
-     * Añade un nodo como siguiente en el flujo de ejecución.
-     * 
-     * @param node Nodo a añadir como siguiente.
-     */
-	public void setNextNode(Node<S> node) {
-		if(nextNodes.contains(node)) { return; }
-		this.nextNodes.add(node);
 	}
 	
 	/**
@@ -87,28 +52,18 @@ public class Node<S> {
      */
 	@Override
 	public String toString() {
-		String s = "Node " + nombre + " (" + nextNodes.size() + " output nodes)";
+		String s = "Node " + super.toString() + " (" + super.getNextNodes().size() + " output nodes)";
 		return s;
 	}
-	
-	/**
-     * Añade una condicion para ejecutar a la arista que une los nodos.
-     * 
-     * @param node Nombre identificador del nodo.
-     * @param condExecute expresión lambda que sirve de condicion para la arista.
-     */
-	public void addCondition(String node, Predicate<S> condExecute) {
-		this.condExecutes.put(node, condExecute);
+
+	@Override
+	public boolean isNode() {
+		return true;
 	}
-	
-	/**
-     * Devuelve la expresión lambda que sirve de condicion para la arista que une ambos nodos.
-     * 
-     * @param node Nombre identificador del nodo.
-     * 
-     * @return Condicion para ejecutar la arista entre ambos nodos.
-     */
-	public Predicate<S> getCondition(String node) {
-		return this.condExecutes.get(node) ;
+
+
+	@Override
+	public void ejecutar(S input, boolean debug) {
+		codigo.accept(input);
 	}
 }
