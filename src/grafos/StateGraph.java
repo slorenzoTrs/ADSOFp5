@@ -171,7 +171,7 @@ public class StateGraph<T> extends Elemento<T>{
 			i++;
 		}
 
-        for (Elemento next : node.getNextNodes()) {
+        for (Elemento<?> next : node.getNextNodes()) {
         	Predicate<T> condExecute = (Predicate<T>) node.getCondition(next.getNombre());
         	if (condExecute != null) {
         		if (condExecute.test(data) == false) {
