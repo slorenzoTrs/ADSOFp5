@@ -5,12 +5,13 @@ import grafos.StateGraph;
 public class MainAp3 {
 	public static void main(String[] args) {
 		StateGraph<NumericData> sg = buildWorkflowIncluded();
+		StateGraph<StringData> sd = buildWorkflow(sg);
 		
-		System.out.println(sg);
+		System.out.println(sd);
 		
-		NumericData input = new NumericData(2, 3);
+		StringData input = new StringData("jamon", "", 2);
 		System.out.println("input = " + input);
-		NumericData output = sg.run(input, true);
+		StringData output = sd.run(input, true);
 		System.out.println("result = " + output);
 	}
 	
@@ -43,10 +44,10 @@ public class MainAp3 {
 		
 		sg.addNode("replicate", sd -> sd.replicate());
 		
-		sg.addEdge("calculate", "replicate");
+		sg.addEdge("calculate", "replicate")
+		  .addConditionalEdge("replicate", "replicate", sd -> sd.times()>0);
 		
-		sg.setInitial("sum");
-		sg.setFinal("square");
+		sg.setInitial("calculate");
 		
 		return sg;
 	}
