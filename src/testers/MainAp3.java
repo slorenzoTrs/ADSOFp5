@@ -17,8 +17,8 @@ import grafos.StateGraph;
  * 
  * Requiere las clases `StateGraph`, `Node`, `NodeG`, `StringData` y `NumericData`.
  * 
- * @author Sofía Castro
- * @author Sara Lorenzo
+ * @author Sofía Castro - sofiai.castro@estudiante.uam.es
+ * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
 public class MainAp3 {
