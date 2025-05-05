@@ -1,8 +1,13 @@
 package grafos;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import nodos.ComponentNode;
+import nodos.Node;
+import nodos.NodeG;
 
 /**
  * La clase StateGraph representa un grafo dirigido que modela un flujo de estados o ejecución.
@@ -18,12 +23,12 @@ import java.util.function.Predicate;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class StateGraph<T>{
+public class StateGraph<T> implements Graph<T>{
 	private String nombre;
 	private String desc;
-	private LinkedHashMap<String, Node<T>> nodos = new LinkedHashMap<>();
-	private Node<T> nodoI;
-	private Node<T> nodoF;
+	private LinkedHashMap<String, ComponentNode<T>> nodos = new LinkedHashMap<>();
+	private ComponentNode<T> nodoI;
+	private ComponentNode<T> nodoF;
 	
 	/**
      * Constructor de la clase StateGraph.
@@ -36,8 +41,31 @@ public class StateGraph<T>{
 		this.desc = desc;
 	}
 	
+	/**
+     * Obtiene el nombre del grafo.
+     *
+     * @return Nombre del grafo actual.
+     */
 	public String getNombre() {
 		return nombre;
+	}
+	
+	/**
+     * Obtiene la descripcion del grafo.
+     *
+     * @return Descripción del grafo actual.
+     */
+	public String getDescripcion() {
+		return desc;
+	}
+	
+	/**
+     * Obtiene los nodos del grafo.
+     *
+     * @return Colección con todos los nodos del grafo actual.
+     */
+	public Collection<ComponentNode<T>> getNodes() {
+		return nodos.values();
 	}
 	
 	/**
@@ -47,11 +75,23 @@ public class StateGraph<T>{
      * @param codNodo Código que se ejecutará al activar el nodo.
      * @return Referencia al grafo actual para permitir llamadas encadenadas.
      */
+	@Override
 	public StateGraph<T> addNode(String nombreNodo, Consumer<T> codNodo) {
 		Node<T> node = new Node<T>(nombreNodo, codNodo);
 		this.nodos.put(nombreNodo, node);
 		return this;
 	}
+	
+	/**
+     * Añade un nodo al grafo con su código asociado.
+     * 
+     * @param node Nodo que se desea añadir.
+     * @return Referencia al grafo actual para permitir llamadas encadenadas.
+     */
+    public Graph<T> addNode(ComponentNode<T> node) {
+    	this.nodos.put(node.getNombre(), node);
+		return this;
+    }
 	
 	/**
      * Añade un nodo, en modo de StateGraph, al grafo con sus propios nodos.
@@ -74,7 +114,7 @@ public class StateGraph<T>{
      * @return Referencia al grafo actual para permitir llamadas encadenadas.
      */
 	public StateGraph<T> addEdge(String origen, String destino) {
-		Node<T> nodoI = null, nodoF = null;
+		ComponentNode<T> nodoI = null, nodoF = null;
 		nodoI = this.nodos.get(origen);
 		nodoF = this.nodos.get(destino);
 		nodoI.addNextNode(nodoF);
@@ -91,7 +131,7 @@ public class StateGraph<T>{
      * @return Referencia al grafo actual para permitir llamadas encadenadas.
      */
 	public StateGraph<T> addConditionalEdge(String origen, String destino, Predicate<T> condExecute) {
-		Node<T> nodoI = null, nodoF = null;
+		ComponentNode<T> nodoI = null, nodoF = null;
 		nodoI = this.nodos.get(origen);
 		nodoF = this.nodos.get(destino);
 		nodoI.addNextNode(nodoF);
@@ -105,7 +145,7 @@ public class StateGraph<T>{
      * @param init Nombre del nodo inicial.
      */
 	public void setInitial(String init) {
-		Node<T> nodo = nodos.get(init);
+		ComponentNode<T> nodo = nodos.get(init);
 		this.nodoI = nodo;
 	}
 	
@@ -115,25 +155,25 @@ public class StateGraph<T>{
      * @param fin Nombre del nodo final.
      */
 	public void setFinal(String fin) {
-		Node<T> nodo = nodos.get(fin);
+		ComponentNode<T> nodo = nodos.get(fin);
 		this.nodoF = nodo;
 	}
 	
 	/**
      * Obtiene el nodo inicial del grafo.
      * 
-     * @result init Nodo inicial.
+     * @return init Nodo inicial.
      */
-	public Node<T> getInitial() {
+	public ComponentNode<T> getInitial() {
 		return this.nodoI;
 	}
 	
 	/**
      * Obtiene el nodo final del grafo.
      * 
-     * @result init Nodo final.
+     * @return init Nodo final.
      */
-	public Node<T> getFinal() {
+	public ComponentNode<T> getFinal() {
 		return this.nodoF;
 	}
 	
@@ -144,6 +184,7 @@ public class StateGraph<T>{
      * @param trazado Si es true, imprime el trazado de pasos por consola.
      * @return Resultado final tras ejecutar el flujo completo.
      */
+	@Override
 	public T run(T input, boolean trazado) {
 		int i = 1;
 		if(trazado) {
@@ -163,7 +204,7 @@ public class StateGraph<T>{
      */
 	public T executeFrom(T data, boolean debug) {
         int step = 2;
-        Node<T> actual = nodoI;
+        ComponentNode<T> actual = nodoI;
         
         while (actual != null) {
     		// Ejecutar el código del nodo actual
@@ -177,8 +218,8 @@ public class StateGraph<T>{
     		if (actual == nodoF) break;
 
     		// Buscar el siguiente nodo válido
-    		Node<T> siguiente = null;
-    		for (Node<T> next : actual.getNextNodes()) {
+    		ComponentNode<T> siguiente = null;
+    		for (ComponentNode<T> next : actual.getNextNodes()) {
     			Predicate<T> cond = actual.getCondition(next.getNombre());
     			if (cond == null || cond.test(data)) {
     				siguiente = next;

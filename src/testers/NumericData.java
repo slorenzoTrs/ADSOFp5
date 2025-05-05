@@ -19,7 +19,7 @@ import java.util.LinkedHashMap;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class NumericData extends LinkedHashMap<String, Integer>{
+public class NumericData extends LinkedHashMap<String, Integer> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -33,4 +33,5 @@ public class NumericData extends LinkedHashMap<String, Integer>{
 		this.put("op2", op2);
 		this.put("result", 0);
 	}
+
 }

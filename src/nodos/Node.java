@@ -1,4 +1,4 @@
-package grafos;
+package nodos;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,9 +22,9 @@ import java.util.function.Predicate;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class Node<S> {
+public class Node<S> implements ComponentNode<S>{
 	private String nombre;
-	private List<Node<S>> nextNodes = new LinkedList<>();
+	private List<ComponentNode<S>> nextNodes = new LinkedList<>();
 	private HashMap<String, Predicate<S>> condExecutes = new HashMap<>();
 	private Consumer<S> codigo;
 	
@@ -55,6 +55,7 @@ public class Node<S> {
      * 
      * @return Nombre del nodo.
      */
+	@Override
 	public String getNombre() {
 		return nombre;
 	}
@@ -64,6 +65,7 @@ public class Node<S> {
      * 
      * @return Función que representa el comportamiento del nodo.
      */
+	@Override
 	public Consumer<S> getCodigo() {
 		return codigo;
 	}
@@ -73,7 +75,8 @@ public class Node<S> {
      * 
      * @return Lista de nodos siguientes.
      */
-	public List<Node<S>> getNextNodes() {
+	@Override
+	public List<ComponentNode<S>> getNextNodes() {
 		return nextNodes;
 	}
 	
@@ -82,7 +85,8 @@ public class Node<S> {
      * 
      * @param node Nodo a añadir como siguiente.
      */
-	public void addNextNode(Node<S> node) {
+	@Override
+	public void addNextNode(ComponentNode<S> node) {
 		if(nextNodes.contains(node)) { return; }
 		this.nextNodes.add(node);
 	}
@@ -93,6 +97,7 @@ public class Node<S> {
      * @param node Nombre del nodo de destino.
      * @param condExecute Expresión lambda que representa la condición de transición.
      */
+	@Override
 	public void addCondition(String node, Predicate<S> condExecute) {
 		this.condExecutes.put(node, condExecute);
 	}
@@ -103,6 +108,7 @@ public class Node<S> {
      * @param node Nombre del nodo de destino.
      * @return Condición de ejecución asociada a esa transición (puede ser null).
      */
+	@Override
 	public Predicate<S> getCondition(String node) {
 		return this.condExecutes.get(node) ;
 	}
@@ -126,6 +132,7 @@ public class Node<S> {
      * @param debug Si es true, se puede imprimir información de depuración.
      * @return El mismo objeto de entrada, posiblemente modificado.
      */
+	@Override
 	public S execute(S input, boolean debug) {
 		codigo.accept(input);
 		return input;

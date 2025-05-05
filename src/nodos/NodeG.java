@@ -1,7 +1,9 @@
-package grafos;
+package nodos;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import grafos.StateGraph;
 
 /**
  * La clase NodeG representa un nodo especializado dentro de un grafo de estados que
