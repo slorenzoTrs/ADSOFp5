@@ -3,7 +3,7 @@ package grafos;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StreamingStateGraph<T> extends StateGraph<List<T>> {
+public class StreamingStateGraph<T extends Comparable<T>> extends StateGraph<List<T>> {
 	private List<T> history = new LinkedList<>();
 
 	public StreamingStateGraph(String nombre, String desc) {
@@ -18,7 +18,7 @@ public class StreamingStateGraph<T> extends StateGraph<List<T>> {
      * @param trazado Si es true, imprime el trazado de pasos por consola.
      * @return Resultado final tras ejecutar el flujo completo.
      */
-	public T run2(T input, boolean trazado) {
+	public T run(T input, boolean trazado) {
 		int i = 1;
 		history.add(input);
 		if(trazado) {

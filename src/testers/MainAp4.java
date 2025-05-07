@@ -31,7 +31,7 @@ public class MainAp4 {
         for (double valor : entradas) {
             DoubleData input = new DoubleData(valor, 0.0);
             System.out.println("Workflow input = " + input);
-            sg.run2(input, true); // true → modo trazado
+            sg.run(input, true); // true → modo trazado
         }
 
         // Mostrar historial final

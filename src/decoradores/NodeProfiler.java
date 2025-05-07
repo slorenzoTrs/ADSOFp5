@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nodos.ComponentNode;
+import testers.PublicCloneable;
 
 /**
  * Decorador de nodo que guarda el tiempo de ejecucion de un nodo.
@@ -14,7 +15,7 @@ import nodos.ComponentNode;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class NodeProfiler<T> extends NodeDecorator<T> {
+public class NodeProfiler<T extends PublicCloneable<T>> extends NodeDecorator<T> {
     private List<Trace<T>> traces = new ArrayList<>();
 
     /**
@@ -29,7 +30,7 @@ public class NodeProfiler<T> extends NodeDecorator<T> {
     @Override
     public T execute(T input, boolean debug) {
     	long inicio = System.nanoTime();
-    	T t = input;
+    	T t = (T)input.clone();
     	T output = super.execute(input, debug);
         long fin = System.nanoTime();
         

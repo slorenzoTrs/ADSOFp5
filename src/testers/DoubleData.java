@@ -8,7 +8,7 @@ package testers;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class DoubleData {
+public class DoubleData implements Comparable<DoubleData>{
     private double value;
     private double average;
 
@@ -69,4 +69,12 @@ public class DoubleData {
     public String toString() {
         return String.format("%.1f (avg.= %.3f)", value, average);
     }
+
+	@Override
+	public int compareTo(DoubleData o) {
+		if (this.average - o.average != 0) {
+			return (int)(this.average - o.average);
+		} 
+		return (int) (this.value -this.value);
+	}
 }

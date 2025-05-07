@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import grafos.Graph;
 import nodos.ComponentNode;
 import nodos.Node;
+import testers.PublicCloneable;
 
 /**
  * Decorador que añade capacidad de profiling (conteo de ejecuciones) a un StateGraph.
@@ -18,7 +19,7 @@ import nodos.Node;
  * @autor Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class StateGraphProfiler<T> extends StateGraphDecorator<T> {
+public class StateGraphProfiler<T extends PublicCloneable<T>> extends StateGraphDecorator<T> {
 
     /**
      * Constructor que decora un StateGraph con capacidades de profiling.
@@ -40,7 +41,7 @@ public class StateGraphProfiler<T> extends StateGraphDecorator<T> {
     @Override
     public Graph<T> addNode(String nombreNodo, Consumer<T> codNodo) {
         Node<T> node = new Node<>(nombreNodo, codNodo);
-        NodeProfiler<T> decorated = new NodeProfiler<>(node);
+        NodeProfiler<T> decorated = new NodeProfiler<T>(node);
         super.addNode(decorated);
         return this;
     }
@@ -56,6 +57,11 @@ public class StateGraphProfiler<T> extends StateGraphDecorator<T> {
         return super.addNode(decorated);
     }
     
+    /**
+     * Obtine las trazas que los nodos han generado al ejecutarse.
+     *
+     * @return Lista de trazas.
+     */
     public List<Trace<T>> history() {
     	List<Trace<T>> history = new ArrayList<>();
     	
