@@ -3,6 +3,16 @@ package grafos;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * La clase StreamingStateGraph representa un grafo dirigido que modela un flujo de estados o ejecución.
+ * Guarda el estado de cada ejecución en un historial que luego pasa como input a los nodos en su ejecución.
+ * 
+ * @param <T> Tipo de dato sobre el cual operan los nodos del grafo.
+ * 
+ * @author Sofía Castro - sofiai.castro@estudiante.uam.es
+ * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
+ * Pareja 11
+ */
 public class StreamingStateGraph<T extends Comparable<T>> extends StateGraph<List<T>> {
 	private List<T> history = new LinkedList<>();
 
@@ -28,7 +38,12 @@ public class StreamingStateGraph<T extends Comparable<T>> extends StateGraph<Lis
 		List<T> result = executeFrom(history, trazado);
 		return result.getLast();
 	}
-		
+	
+	/**
+     * Obtiene el historial de estados de ejecuciones de los nodos del grafo.
+     * 
+     * @return Lista con el historial de estados.
+     */
 	public List<T> history() {
 		return history;
 	}

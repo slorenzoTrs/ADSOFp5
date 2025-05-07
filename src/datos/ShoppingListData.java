@@ -1,10 +1,10 @@
-package testers;
+package datos;
 
 import java.util.ArrayList;
 
 /**
  * Clase personalizada que representa una lista de la compra.
  */
-class ShoppingListData extends ArrayList<String> {
+public class ShoppingListData extends ArrayList<String> {
 	private static final long serialVersionUID = 1L;
 }

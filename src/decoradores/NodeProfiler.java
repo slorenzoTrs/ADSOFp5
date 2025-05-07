@@ -3,8 +3,8 @@ package decoradores;
 import java.util.ArrayList;
 import java.util.List;
 
+import datos.PublicCloneable;
 import nodos.ComponentNode;
-import testers.PublicCloneable;
 
 /**
  * Decorador de nodo que guarda el tiempo de ejecucion de un nodo.
@@ -40,6 +40,11 @@ public class NodeProfiler<T extends PublicCloneable<T>> extends NodeDecorator<T>
         return output;
     }
     
+    /**
+     * Obtiene las trazas de ejecución guardadas en este nodo .
+     * 
+     * @return Lista de trazas de este nodo.
+     */
     public List<Trace<T>> getTraces() {
     	return traces;
     }

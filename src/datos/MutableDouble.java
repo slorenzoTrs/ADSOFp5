@@ -1,6 +1,6 @@
-package testers;
+package datos;
 
-class MutableDouble {
+public class MutableDouble {
     private double value;
     
     public MutableDouble(double value) {

@@ -43,8 +43,10 @@ public class NodeLogger<T> extends NodeDecorator<T> {
 
     /**
      * Acción adicional: escribe mensaje indicando fin de ejecución de nodo.
+     * 
+     * @param output El valor del retorno que se quiere guardar.
      */
-    public void extra(T output) {
+    private void extra(T output) {
         String infoEjecucion = "["+LocalDate.now()+" - "+LocalTime.now()+"] node "+ super.getNombre()+" executed, with output: "+output.toString()+"\n";
         try {
             Path archivo = Paths.get(path);
