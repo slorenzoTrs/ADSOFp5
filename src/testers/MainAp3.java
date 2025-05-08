@@ -1,5 +1,7 @@
 package testers;
 
+import datos.NumericData;
+import datos.StringData;
 import grafos.StateGraph;
 
 /**

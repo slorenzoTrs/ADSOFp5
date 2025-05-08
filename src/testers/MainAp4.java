@@ -2,6 +2,7 @@ package testers;
 
 import java.util.List;
 
+import datos.DoubleData;
 import grafos.StreamingStateGraph;
 
 /**

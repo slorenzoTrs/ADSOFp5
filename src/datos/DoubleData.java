@@ -1,4 +1,4 @@
-package testers;
+package datos;
 
 /**
  * Clase que representa un dato numérico con su promedio acumulado.
@@ -8,7 +8,7 @@ package testers;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class DoubleData implements Comparable<DoubleData>{
+public class DoubleData implements Comparable<DoubleData>, PublicCloneable<DoubleData>{
     private double value;
     private double average;
 
@@ -77,4 +77,14 @@ public class DoubleData implements Comparable<DoubleData>{
 		} 
 		return (int) (this.value -this.value);
 	}
+	
+	@Override
+	public DoubleData clone() {
+        try {
+			return (DoubleData) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
 }

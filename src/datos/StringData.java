@@ -1,4 +1,4 @@
-package testers;
+package datos;
 
 /**
  * La clase StringData encapsula una estructura de datos que contiene:

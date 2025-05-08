@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import datos.PublicCloneable;
 import grafos.Graph;
 import nodos.ComponentNode;
 import nodos.Node;
-import testers.PublicCloneable;
 
 /**
  * Decorador que añade capacidad de profiling (conteo de ejecuciones) a un StateGraph.
@@ -52,6 +52,7 @@ public class StateGraphProfiler<T extends PublicCloneable<T>> extends StateGraph
      * @param node Nodo a añadir.
      * @return El grafo decorado para permitir llamadas encadenadas.
      */
+    @Override
     public Graph<T> addNode(ComponentNode<T> node) {
     	NodeProfiler<T> decorated = new NodeProfiler<T>(node);
         return super.addNode(decorated);

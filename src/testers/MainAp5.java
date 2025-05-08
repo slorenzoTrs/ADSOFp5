@@ -1,5 +1,6 @@
 package testers;
 
+import datos.NumericData;
 import decoradores.StateGraphLogger;
 import decoradores.StateGraphProfiler;
 import grafos.StateGraph;

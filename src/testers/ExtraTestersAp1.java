@@ -1,5 +1,8 @@
 package testers;
 
+import datos.MutableDouble;
+import datos.PersonData;
+import datos.ShoppingListData;
 import grafos.StateGraph;
 
 /**
