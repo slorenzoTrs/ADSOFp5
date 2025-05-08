@@ -15,7 +15,7 @@ import decoradores.StateGraphProfiler;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class TesterAp5Extra {
+public class ExtraTestersAp5 {
 	/**
      * Método principal que ejecuta tres flujos distintos para probar los decoradores del StateGraph.
      *

@@ -14,7 +14,7 @@ import grafos.StreamingStateGraph;
  * @author Sara Lorenzo - sara.lorenzot@estudiante.uam.es
  * Pareja 11
  */
-public class TesterAp4Extra {
+public class ExtraTestersAp4 {
 
     /**
      * Método principal que ejecuta tres flujos distintos: contadores, puntuaciones y niveles.

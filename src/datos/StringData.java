@@ -62,12 +62,30 @@ public class StringData {
 	}
 	
 	/**
+     * Establece el resultado.
+     * 
+     * @param result Nuevo valor para el resultado.
+     */
+	public void setResult(String result) {
+		this.result = result;
+	}
+	
+	/**
      * Devuelve el número actual de repeticiones restantes.
      * 
      * @return Número de repeticiones.
      */
 	public int times() {
 		return times;
+	}
+	
+	/**
+     * Devuelve el string resultante.
+     * 
+     * @return Resultado actual del dato.
+     */
+	public String getResult() {
+		return result;
 	}
 	
 	/**
