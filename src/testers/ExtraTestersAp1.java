@@ -55,11 +55,12 @@ public class ExtraTestersAp1 {
 		sg.addNode("addItemsToBuy", (ShoppingListData list) -> {
 			list.add("Pan");
 			list.add("Leche");
-		}).addNode("buyMilk", (ShoppingListData list) -> list.remove("Leche"));
+		}).addNode("buyMilk", (ShoppingListData list) -> list.remove("Leche"))
+		  .addNode("itemsLeft", (ShoppingListData list) -> System.out.println("Quedan " + list.size() + " elementos que comprar"));
 
 		sg.addEdge("addItemsToBuy", "buyMilk");
+		sg.addEdge("buyMilk", "itemsLeft");
 		sg.setInitial("addItemsToBuy");
-		sg.setFinal("buyMilk");
 
 		System.out.println("\n--- Shopping List Workflow ---");
 		System.out.println(sg);
@@ -77,7 +78,6 @@ public class ExtraTestersAp1 {
 
 		sg.addEdge("updateAge", "printPerson");
 		sg.setInitial("updateAge");
-		sg.setFinal("printPerson");
 
 		System.out.println("\n--- Person Workflow ---");
 		System.out.println(sg);

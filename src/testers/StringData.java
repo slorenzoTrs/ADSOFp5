@@ -71,6 +71,24 @@ public class StringData {
 	}
 	
 	/**
+     * Establece la palabra a repetir.
+     * 
+     * @param word Nuevo valor para la palabra.
+     */
+	public void setWord(String word) {
+		this.word = word;
+	}
+	
+	/**
+     * Devuelve la palabra.
+     * 
+     * @return La palabra que se repite.
+     */
+	public String word() {
+		return word;
+	}
+	
+	/**
      * Devuelve una representación textual del estado actual del objeto.
      * 
      * @return Cadena con los valores de los campos internos.
